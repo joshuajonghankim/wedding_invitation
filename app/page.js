@@ -189,7 +189,7 @@ export default function Home() {
               width={1000}
               height={1500}
               priority={true}
-              className={`max-h-full ${isSpinning ? 'animate-spin' : ''}`}
+              className={`max-h-full w-auto object-contain ${isSpinning ? 'animate-spin' : ''}`}
             />
           </button>
 

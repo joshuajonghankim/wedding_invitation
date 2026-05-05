@@ -4,53 +4,31 @@ import { useEffect } from 'react';
 
 const LivereComments = () => {
   useEffect(() => {
-    const checkLivereTowerInitialization = () => {
-      if (typeof window.LivereTower === 'function') {
-        console.log("LivereTower initialized successfully.");
-        // Additional logic to execute once LivereTower is initialized can go here.
-        return true;
-      }
-      return false;
-    };
+    const scriptId = 'livere-script';
 
-    const loadLivereScript = () => {
-      // Set Livere options before script loading
-      window.livereOptions = {
-        refer: 'lsy-khe.vercel.app/',
-      };
-
-      // Create and append the Livere script
-      const script = document.createElement('script');
-      script.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-      script.async = true;
-
-      script.onload = () => {
-        console.log('Livere script loaded successfully.');
-        // Start polling to check for LivereTower initialization
-        const interval = setInterval(() => {
-          if (checkLivereTowerInitialization()) {
-            clearInterval(interval);
-          }
-        }, 100); // Check every 100ms
-      };
-
-      script.onerror = () => {
-        console.error('Failed to load Livere script.');
-      };
-
-      document.body.appendChild(script);
-
-      // Clean up the script when the component is unmounted
-      return () => {
-        document.body.removeChild(script);
-        console.log('Livere script removed on cleanup.');
-      };
-    };
-
-    // Check if LivereTower is already loaded to avoid reloading
-    if (!checkLivereTowerInitialization()) {
-      loadLivereScript();
+    // 스크립트가 이미 존재하면 중복 추가하지 않음 (React StrictMode 대응)
+    if (document.getElementById(scriptId)) {
+      return;
     }
+
+    window.livereOptions = {
+      refer: 'lsy-khe.vercel.app/',
+    };
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    return () => {
+      // 언마운트 시 컨테이너를 비워 중복 렌더링을 방지
+      const container = document.getElementById('lv-container');
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
   }, []);
 
   return (
