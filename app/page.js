@@ -1,7 +1,10 @@
 'use client';
 import Image from "next/image";
+import Script from "next/script";
+import dynamic from "next/dynamic";
 import React, { useState, useEffect, useRef } from 'react';
-import LivereComments from "./LivereComments";
+
+const LivereComments = dynamic(() => import('./LivereComments'), { ssr: false });
 
 function copyText(entryText) {
   navigator.clipboard.writeText(entryText);
@@ -94,8 +97,8 @@ export default function Home() {
         }
       };
 
-      window.addEventListener('touchstart', handleTouchOrDrag);
-      window.addEventListener('dragstart', handleTouchOrDrag);
+      window.addEventListener('touchstart', handleTouchOrDrag, { passive: true });
+      window.addEventListener('dragstart', handleTouchOrDrag, { passive: true });
       window.addEventListener('dragend', handleTouchOrDrag);
 
       return () => {
@@ -130,20 +133,6 @@ export default function Home() {
 
   }, []);
 
-  useEffect(() => {
-    // naver map API script
-    const script = document.createElement("script");
-    script.src = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=tbpkc88r6x";
-    script.async = true;
-    script.onload = () => createMap();
-    document.body.appendChild(script);
-
-    return () => {
-      // delete if unmount
-      document.body.removeChild(script);
-    };
-  }, []);
-
   const createMap = () => {
     if (window.naver && window.naver.maps) {
       const mapOptions = {
@@ -168,21 +157,6 @@ export default function Home() {
 
   const [animateBounce, setAnimateBounce] = useState(true);
 
-  useEffect(() => {
-    // Load Kakao SDK script
-    const script = document.createElement('script');
-    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
-    script.integrity = 'sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4';
-    script.crossOrigin = 'anonymous';
-    script.onload = () => {
-      // Initialize Kakao SDK
-      if (window.Kakao) {
-        window.Kakao.init('ae3cebdc03815c50b89b7721ec09778c');
-      }
-    };
-    document.head.appendChild(script);
-  }, []);
-
   const shareToKakao = () => {
     if (window.Kakao) {
       window.Kakao.Share.sendCustom({
@@ -197,7 +171,7 @@ export default function Home() {
         {/* Main page */}
         <div className="relative snap-center snap-always min-h-dvh min-w-full flex flex-col justify-center items-center bg-white">
           <div className="h-1.5/10 flex flex-col justify-center text-center font-Charter text-gray-700 p-0">
-            <h1 className="text-3xl">July|20|2024</h1>
+            <h1 className="text-3xl">July | 20 | 2024</h1>
             <h2 className="mt-2 text-sm tracking-widest">SATURDAY</h2>
           </div>
 
@@ -214,6 +188,7 @@ export default function Home() {
               alt="cover_image"
               width={1000}
               height={1500}
+              priority={true}
               className={`max-h-full ${isSpinning ? 'animate-spin' : ''}`}
             />
           </button>
@@ -412,7 +387,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
         </div>
 
         <div className="relative snap-center snap-always min-h-dvh min-w-full flex flex-col justify-center items-center bg-white bg-cover bg-center">
@@ -468,26 +442,29 @@ export default function Home() {
                 </button>
                 {showGroomAccounts && (
                   <div className="text-gray-700 p-2 w-full font-NotoSansKR">
+                    {/* 진짜 계좌번호: 카카오뱅크 3333-10-5382056 */}
                     <p className="flex justify-between items-center">
-                      <span className="">카카오뱅크 3333-10-5382056<br></br>
+                      <span className="">카카오뱅크 0000-00-0000000<br></br>
                         이성연</span>
-                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("3333-10-5382056")}>
+                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("0000-00-0000000")}>
                         복사하기
                       </button>
                     </p>
                     <hr className="my-1 w-full border-bgcolor-sky" />
+                    {/* 진짜 계좌번호: SC제일은행 600-20-373733 */}
                     <p className=" flex justify-between items-center">
-                      <span>SC제일은행 600-20-373733<br></br>
+                      <span>SC제일은행 000-00-000000<br></br>
                         이영우</span>
-                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("600-20-373733")}>
+                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("000-00-000000")}>
                         복사하기
                       </button>
                     </p>
                     <hr className="my-1 w-full border-bgcolor-sky" />
+                    {/* 진짜 계좌번호: 국민은행 679802-93-115438 */}
                     <p className=" flex justify-between items-center">
-                      <span>국민은행 679802-93-115438<br></br>
+                      <span>국민은행 000000-00-000000<br></br>
                         신신숙<br></br></span>
-                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("679802-93-115438")}>
+                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("000000-00-000000")}>
                         복사하기
                       </button>
                     </p>
@@ -509,26 +486,29 @@ export default function Home() {
                 </button>
                 {showBrideAccounts && (
                   <div className="text-gray-700 p-2 w-full font-NotoSansKR">
+                    {/* 진짜 계좌번호: 카카오뱅크 3333-28-6191015 */}
                     <p className="flex justify-between items-center">
-                      <span>카카오뱅크 3333-28-6191015<br></br>
+                      <span>카카오뱅크 0000-00-0000000<br></br>
                         김한은</span>
-                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("3333-28-6191015")}>
+                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("0000-00-0000000")}>
                         복사하기
                       </button>
                     </p>
                     <hr className="my-1 w-full border-bgcolor-sky" />
+                    {/* 진짜 계좌번호: 농협 702076-52-131271 */}
                     <p className="flex justify-between items-center">
-                      <span>농협 702076-52-131271<br></br>
+                      <span>농협 000000-00-000000<br></br>
                         김규백</span>
-                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("702076-52-131271")}>
+                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("000000-00-000000")}>
                         복사하기
                       </button>
                     </p>
                     <hr className="my-1 w-full border-bgcolor-sky" />
+                    {/* 진짜 계좌번호: 대구은행 009-08-312442 */}
                     <p className="flex justify-between items-center">
-                      <span>대구은행 009-08-312442<br></br>
+                      <span>대구은행 000-00-000000<br></br>
                         김영정</span>
-                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("009-08-312442")}>
+                      <button className="p-1 border rounded-md border-button-blue text-custom-blue" onClick={() => copyText("000-00-000000")}>
                         복사하기
                       </button>
                     </p>
@@ -615,6 +595,23 @@ export default function Home() {
       {/* audio component */}
       <audio ref={audioRef} src="/music/In-your-heart[1.2].m4a" type="audio/mpeg" />
 
+      {/* Optimized External Scripts */}
+      <Script
+        src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=tbpkc88r6x"
+        strategy="lazyOnload"
+        onLoad={createMap}
+      />
+      <Script
+        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+        integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+        crossOrigin="anonymous"
+        strategy="lazyOnload"
+        onLoad={() => {
+          if (window.Kakao) {
+            window.Kakao.init('ae3cebdc03815c50b89b7721ec09778c');
+          }
+        }}
+      />
     </main>
   );
 }
